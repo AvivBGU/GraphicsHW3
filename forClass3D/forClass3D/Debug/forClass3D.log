@@ -1,0 +1,8 @@
+﻿  main.cpp
+c:\users\aviv metz\desktop\הפעלות במתנס\תכנות\סמסטר ה\גרפיקה\assignment 3\graphicshw3\forclass3d\forclass3d\main.cpp(111): warning C4244: 'argument': conversion from 'T' to 'int', possible loss of data
+          with
+          [
+              T=float
+          ]
+c:\users\aviv metz\desktop\הפעלות במתנס\תכנות\סמסטר ה\גרפיקה\assignment 3\graphicshw3\forclass3d\forclass3d\main.cpp(87): warning C4101: 'relative': unreferenced local variable
+  forClass3D.vcxproj -> C:\Users\Aviv Metz\Desktop\הפעלות במתנס\תכנות\סמסטר ה\גרפיקה\assignment 3\GraphicsHW3\forClass3D\Debug\forClass3D.exe
