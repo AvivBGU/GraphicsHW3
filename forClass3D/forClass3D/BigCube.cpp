@@ -31,7 +31,17 @@ BigCube::BigCube(int cubeSize) :cubeSize{ cubeSize }, cube_matrix{NULL}, index_m
 }
 
 BigCube::~BigCube() {
-	//THIS IS MOCK
+	for (int i = 0; i < cubeSize; i++) {
+
+		for (int j = 0; j < cubeSize; j++) {
+			delete cube_matrix[i][j];
+			delete index_matrix[i][j];
+		}
+		delete cube_matrix[i];
+		delete index_matrix[i];
+	}
+	delete cube_matrix;
+	delete index_matrix;
 }
 
 void BigCube::rotate_index(int face_index) {
