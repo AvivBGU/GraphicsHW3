@@ -21,6 +21,14 @@ static const glm::vec3 YELLOW = glm::vec3(1, 1, 0);
 static const glm::vec3 TEAL = glm::vec3(0, 1, 1);
 static const glm::vec3 PURPLE = glm::vec3(1, 0, 1);
 
+void print_matrix(mat4 matrix_to_print) { //Helper function to print a given matrix.
+	std::cout << "Given matrix is: " << std::endl;
+	for (int i = 0; i < 4; i++) {
+		std::cout << matrix_to_print[i][0] << "    " << matrix_to_print[i][1] << "    "
+			<< matrix_to_print[i][2] << "    " << matrix_to_print[i][3] << std::endl;
+	}
+}
+
 
 int main(int argc, char** argv)
 {
@@ -83,35 +91,34 @@ int main(int argc, char** argv)
 	vec3 forward = glm::vec3(0.0f, 0.0f, 1.0f);
 	vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
 	mat4 P = glm::perspective(60.0f, (float)DISPLAY_WIDTH/(float)DISPLAY_HEIGHT, 0.1f, 100.0f);
-	mat4 M = glm::rotate(45.0f,vec3(1,1,1));//glm::mat4(1);
+	mat4 M = /*mat4(1);*/glm::rotate(45.0f,vec3(1));
 	float relative;
 	P = P * glm::lookAt(pos, pos + forward, up);
 	mat4 MVP = mat4(1);
 	mat4 scale = glm::scale(glm::vec3(0.20));
 	glfwSetKeyCallback(display.m_window,key_callback);
 
-	BigCube da_cube(CUBE_SIZE);
+	BigCube main_cube(CUBE_SIZE);
 	vec3 indexes;
+	int counter = 0;
 	while(!glfwWindowShouldClose(display.m_window))
 	{
 		Sleep(3);
 		shader.Bind();
 		display.Clear(1.0f, 1.0f, 1.0f, 1.0f);
-
+		M = glm::rotate(M, 0.0f, up);
 		for (auto i = 0; i < CUBE_SIZE; i++)
 		{
 			for (auto j = 0; j < CUBE_SIZE; j++)
 			{
 				for (auto k = 0; k < CUBE_SIZE; k++)
 				{
-					//std::cout << "indexes are: " << x << " " << y << " " << z << std::endl;
-					M = glm::rotate(M, 0.01f, up);
-					//M = localRotateX * localRotateY * rotate * translate;
-					indexes = da_cube.get_index_vec(i, j, k);
-					Displayable_object small_cube = da_cube.get_small_cube(indexes.x, indexes.y, indexes.z);
-					mat4 small_cube_stuff = small_cube.get_result();
-					MVP = P * scale*M*small_cube_stuff;
-					shader.Update(MVP, M);
+					/*mat4(1);*/
+				   //M = localRotateX * localRotateY * rotate * translate;
+					indexes = main_cube.get_index_vec(i, j, k);
+					Displayable_object small_cube = main_cube.get_small_cube(indexes.x, indexes.y, indexes.z);
+					MVP = P *M* scale *small_cube.get_result();
+					shader.Update(MVP, M); //Second variable controls the location of the light.
 					mesh.Draw();
 				}
 			}
@@ -122,7 +129,20 @@ int main(int argc, char** argv)
 		//mesh.Draw();
 		//shader.Update(MVP,M);
 		display.SwapBuffers();
-		//Lets rotate some shit.
+		////Lets rotate some shit.
+		if (counter < 1) {
+			main_cube.rotate_index(vec3(1, 0, 0), 0);
+			main_cube.rotate_index(vec3(1, 0, 0), 0);
+			counter++;
+		}
+		//if (counter < 2) {
+		//	main_cube.rotate_index(vec3(1, 0, 0), 2);
+		//	counter++;
+		//}
+		if (counter < 2) {
+			main_cube.rotate_index(vec3(0, 1, 0), 2);
+			counter++;
+		}
 		glfwPollEvents();
 	}
 

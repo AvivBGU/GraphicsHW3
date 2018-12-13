@@ -3,11 +3,15 @@ using namespace glm;
 
 
 void Displayable_object::rotate_object(float degrees, vec3 axis) {
-	mat4 rotation_mat = rotate(degrees, axis);
+	rotation = glm::rotate(rotation, degrees, axis);
+}
+
+Displayable_object::~Displayable_object() {
+
 }
 
 mat4 Displayable_object::get_result() {
-	mat4 result = first_translate * rotatation * second_translate;
+	mat4 result = first_translate * rotation * second_translate;
 	return (result);
 }
 
