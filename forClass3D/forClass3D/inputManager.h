@@ -9,6 +9,9 @@
 			if(action == GLFW_PRESS)
 				glfwSetWindowShouldClose(window,GLFW_TRUE);
 			break;
+		case GLFW_KEY_1:
+			Sleep(800);
+			break;
 		default:
 			break;
 		}

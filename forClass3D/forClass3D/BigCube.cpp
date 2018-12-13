@@ -59,25 +59,59 @@ void BigCube::rotate_index(vec3 axis, int wall_index) {
 						curr_index = index_matrix[wall_index][j][k];
 						cube_matrix[(int)curr_index.x][(int)curr_index.y][(int)curr_index.z].
 							rotate_object(rotation_degrees*rotation_direction, axis);
+						/*std::cout << "The indexes spun:  " << curr_index.x << "   " <<
+							curr_index.y << "   " << curr_index.z << std::endl;*/
 					}
 				}
-				transpose_indexes(0, wall_index);
-				switch_index_cols(0, wall_index);
 				x_angle += rotation_degrees;
+				if ((int)x_angle % 90 == 0) {
+					/*std::cout << "Index prior to turning: " << std::endl;
+					for (int i = 0; i < cubeSize; i++) {
+						std::cout << "row: " << i << std::endl;
+						for (int j = 0; j < cubeSize; j++) {
+							std::cout << "vec: " << j << std::endl;
+							std::cout << index_matrix[wall_index][i][j].x << "   " <<
+								index_matrix[wall_index][i][j].y << "   " <<
+								index_matrix[wall_index][i][j].z << std::endl;
+						}
+						std::cout << "" << std::endl;
+					}*/
+					transpose_indexes(0, wall_index);
+					switch_index_cols(0, wall_index);
+					/*std::cout << "" << std::endl;
+					std::cout << "" << std::endl;
+					std::cout << "" << std::endl;
+					std::cout << "Index after a turning: " << std::endl;
+					for (int i = 0; i < cubeSize; i++) {
+						std::cout << "row: " << i << std::endl;
+						for (int j = 0; j < cubeSize; j++) {
+							std::cout << "vec: " << j << std::endl;
+							std::cout << index_matrix[wall_index][i][j].x << "   " <<
+								index_matrix[wall_index][i][j].y << "    " <<
+								index_matrix[wall_index][i][j].z << std::endl;
+						}
+						std::cout << "" << std::endl;
+					}*/
+				}
 			}
 		}
 		if (axis == y_axis) {
 			if (((int)(x_angle) % 90 == 0) && (((int)(z_angle) % 90) == 0)) {
+				std::cout << "Y axis: " << std::endl;
 				for (auto i = 0; i < cubeSize; i++) {
 					for (auto k = 0; k < cubeSize; k++) {
 						curr_index = index_matrix[i][wall_index][k];
 						cube_matrix[(int)curr_index.x][(int)curr_index.y][(int)curr_index.z].
 							rotate_object(rotation_degrees*rotation_direction, axis);
+						std::cout << "The indexes spun:  " << curr_index.x << "   " <<
+							curr_index.y << "   " << curr_index.z << std::endl;
 					}
 				}
-				transpose_indexes(1, wall_index);
-				switch_index_rows(1, wall_index);
 				y_angle += rotation_degrees;
+				if ((int)y_angle % 90 == 0) {
+					transpose_indexes(1, wall_index);
+					switch_index_rows(1, wall_index);
+				}
 			}
 		}
 		if (axis == z_axis) {
@@ -89,9 +123,11 @@ void BigCube::rotate_index(vec3 axis, int wall_index) {
 							rotate_object(rotation_degrees*rotation_direction, axis);
 					}
 				}
-				transpose_indexes(2, wall_index);
-				switch_index_rows(2, wall_index);
 				z_angle += rotation_degrees;
+				if ((int)z_angle % 90 == 0) {
+					transpose_indexes(2, wall_index);
+					switch_index_cols(2, wall_index);
+				}
 			}
 		}
 	}
@@ -110,7 +146,7 @@ void BigCube::transpose_indexes(int axis, int face_index) {
 	switch (axis) {
 		case 0: //X axis
 			for (; row < cubeSize; row++){
-				for (; col < cubeSize; col++) {
+				for (col = row; col < cubeSize; col++) {
 					switch_helper = index_matrix[face_index][row][col];
 					index_matrix[face_index][row][col] = index_matrix[face_index][col][row];
 					index_matrix[face_index][col][row] = switch_helper;
@@ -119,7 +155,7 @@ void BigCube::transpose_indexes(int axis, int face_index) {
 			break;
 		case 1: //Y axis
 			for (; row < cubeSize; row++) {
-				for (; col < cubeSize; col++) {
+				for (col = row; col < cubeSize; col++) {
 					switch_helper = index_matrix[row][face_index][col];
 					index_matrix[row][face_index][col] = index_matrix[col][face_index][row];
 					index_matrix[col][face_index][row] = switch_helper;
@@ -128,7 +164,7 @@ void BigCube::transpose_indexes(int axis, int face_index) {
 			break;
 		case 2: //Z axis
 			for (; row < cubeSize; row++) {
-				for (; col < cubeSize; col++) {
+				for (col = row; col < cubeSize; col++) {
 					switch_helper = index_matrix[row][col][face_index];
 					index_matrix[row][col][face_index] = index_matrix[col][row][face_index];
 					index_matrix[col][row][face_index] = switch_helper;
@@ -181,11 +217,15 @@ void BigCube::switch_index_cols(int axis, int face_index) {
 	vec3 switch_helper = vec3(1);
 	switch (axis) {
 	case 0: //X axis
-		for (; row < cubeSize; row++) {
-			for (; col < cubeSize; col++) {
-				switch_helper = index_matrix[face_index][col][row];
-				index_matrix[face_index][col][row] = index_matrix[face_index][cubeSize - 1 - col][row];
-				index_matrix[face_index][cubeSize - 1 - col][row] = switch_helper;
+		for (; col < cubeSize; col++) {
+			for (; row < cubeSize; row++) {
+				//std::cout << "Prior to switch:  " << index_matrix[face_index][row][col].x << "   " <<
+				//	index_matrix[face_index][row][col].y << "   " << index_matrix[face_index][row][col].z << std::endl;
+				switch_helper = index_matrix[face_index][row][col];
+				index_matrix[face_index][row][col] = index_matrix[face_index][row][cubeSize - 1 - col];
+				index_matrix[face_index][row][cubeSize - 1 - col] = switch_helper;
+				//std::cout << "After the switch:  " << index_matrix[face_index][row][col].x << "   " <<
+				//	index_matrix[face_index][row][col].y << "   " << index_matrix[face_index][row][col].z << std::endl;
 			}
 		}
 		break;
