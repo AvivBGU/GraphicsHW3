@@ -59,8 +59,8 @@ void BigCube::rotate_index(vec3 axis, int wall_index) {
 						curr_index = index_matrix[wall_index][j][k];
 						cube_matrix[(int)curr_index.x][(int)curr_index.y][(int)curr_index.z].
 							rotate_object(rotation_degrees*rotation_direction, axis);
-						/*std::cout << "The indexes spun:  " << curr_index.x << "   " <<
-							curr_index.y << "   " << curr_index.z << std::endl;*/
+						std::cout << "The indexes spun x axis:  " << curr_index.x << "   " <<
+							curr_index.y << "   " << curr_index.z << std::endl;
 					}
 				}
 				x_angle += rotation_degrees;
@@ -77,7 +77,12 @@ void BigCube::rotate_index(vec3 axis, int wall_index) {
 						std::cout << "" << std::endl;
 					}*/
 					transpose_indexes(0, wall_index);
-					switch_index_cols(0, wall_index);
+					if (rotation_direction == -1) {
+						switch_index_cols(0, wall_index);
+					}
+					else {
+						switch_index_rows(0, wall_index);
+					}
 					/*std::cout << "" << std::endl;
 					std::cout << "" << std::endl;
 					std::cout << "" << std::endl;
@@ -103,14 +108,20 @@ void BigCube::rotate_index(vec3 axis, int wall_index) {
 						curr_index = index_matrix[i][wall_index][k];
 						cube_matrix[(int)curr_index.x][(int)curr_index.y][(int)curr_index.z].
 							rotate_object(rotation_degrees*rotation_direction, axis);
-						std::cout << "The indexes spun:  " << curr_index.x << "   " <<
+						std::cout << "The indexes spun y axis:  " << curr_index.x << "   " <<
 							curr_index.y << "   " << curr_index.z << std::endl;
 					}
 				}
 				y_angle += rotation_degrees;
 				if ((int)y_angle % 90 == 0) {
 					transpose_indexes(1, wall_index);
-					switch_index_rows(1, wall_index);
+					if (rotation_direction == 1){
+						switch_index_cols(1, wall_index);
+					}
+					else {
+						switch_index_rows(1, wall_index);
+					}
+					
 				}
 			}
 		}

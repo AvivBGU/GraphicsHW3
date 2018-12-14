@@ -8,9 +8,9 @@
 #include <glm/gtx/transform.hpp>
 #include "Displayable_object.h"
 #include "BigCube.h"
-#define CUBE_SIZE 3
+#define CUBE_SIZE 2
 using namespace glm;
-
+BigCube main_cube(CUBE_SIZE);
 
 static const int DISPLAY_WIDTH = 800;
 static const int DISPLAY_HEIGHT = 800;
@@ -90,14 +90,13 @@ int main(int argc, char** argv)
 	vec3 pos = vec3(0,0,-5);
 	vec3 forward = glm::vec3(0.0f, 0.0f, 1.0f);
 	vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
-	mat4 P = glm::perspective(60.0f, (float)DISPLAY_WIDTH/(float)DISPLAY_HEIGHT, 0.1f, 100.0f);
+	mat4 perspective = glm::perspective(60.0f, (float)DISPLAY_WIDTH/(float)DISPLAY_HEIGHT, 0.1f, 100.0f);
 	mat4 M = glm::rotate(45.0f,vec3(1));
-	P = P * glm::lookAt(pos, pos + forward, up);
+	perspective = perspective * glm::lookAt(pos, pos + forward, up);
 	mat4 MVP = mat4(1);
 	mat4 scale = glm::scale(glm::vec3(0.20));
 	glfwSetKeyCallback(display.m_window,key_callback);
 
-	BigCube main_cube(CUBE_SIZE);
 	vec3 indexes;
 	int counter = 0;
 	while(!glfwWindowShouldClose(display.m_window))
@@ -105,7 +104,7 @@ int main(int argc, char** argv)
 		Sleep(3);
 		shader.Bind();
 		display.Clear(1.0f, 1.0f, 1.0f, 1.0f);
-		M = glm::rotate(M, 0.1f, up);
+		M = glm::rotate(M, 0.0f, up);
 		for (auto i = 0; i < CUBE_SIZE; i++)
 		{
 			for (auto j = 0; j < CUBE_SIZE; j++)
@@ -115,16 +114,17 @@ int main(int argc, char** argv)
 				   //M = localRotateX * localRotateY * rotate * translate;
 					indexes = main_cube.get_index_vec(i, j, k);
 					Displayable_object small_cube = main_cube.get_small_cube(indexes.x, indexes.y, indexes.z);
-					MVP = P *M* scale *small_cube.get_result();
+					MVP = perspective *M* scale *small_cube.get_result();
+					/*M = small_cube.get_result();
+					MVP = perspective*scale * M;*/
 					shader.Update(MVP, M); //Second variable controls the location of the light.
 					mesh.Draw();
 				}
 			}
 		}
 		display.SwapBuffers();
-		Sleep(1000);
 		////Lets rotate some shit.
-		if (counter < 1) {
+		/*if (counter < 1) {
 			main_cube.rotate_index(vec3(1, 0, 0), 0);
 			main_cube.rotate_index(vec3(1, 0, 0), 0);
 			counter++;
@@ -133,7 +133,7 @@ int main(int argc, char** argv)
 		if (counter > 5 && counter < 7) {
 			main_cube.rotate_index(vec3(0, 1, 0), 0);
 			counter++;
-		}
+		}*/
 		glfwPollEvents();
 	}
 

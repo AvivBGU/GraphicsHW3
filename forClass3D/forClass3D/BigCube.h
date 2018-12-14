@@ -28,6 +28,9 @@ public:
 		if (rotation_degrees*angle_mult < 180) {
 			rotation_degrees *= angle_mult;
 		}
+		else {
+			rotation_degrees = 180;
+		}
 	}
 
 	void change_rotation_direction() {
@@ -39,6 +42,14 @@ public:
 
 	Displayable_object& get_small_cube(int i, int j, int k) const {
 		return cube_matrix[i][j][k];
+	}
+
+	vec3*** get_index_matrix() { //TODO DELETE THIS AFTER DEBUG
+		return index_matrix;
+	}
+
+	int get_cube_size() {
+		return cubeSize;
 	}
 
 
