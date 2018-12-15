@@ -63,19 +63,9 @@ void BigCube::rotate_index(vec3 axis, int wall_index) {
 							curr_index.y << "   " << curr_index.z << std::endl;
 					}
 				}
-				x_angle += rotation_degrees;
+				x_angle += rotation_degrees * rotation_direction;
 				if ((int)x_angle % 90 == 0) {
-					/*std::cout << "Index prior to turning: " << std::endl;
-					for (int i = 0; i < cubeSize; i++) {
-						std::cout << "row: " << i << std::endl;
-						for (int j = 0; j < cubeSize; j++) {
-							std::cout << "vec: " << j << std::endl;
-							std::cout << index_matrix[wall_index][i][j].x << "   " <<
-								index_matrix[wall_index][i][j].y << "   " <<
-								index_matrix[wall_index][i][j].z << std::endl;
-						}
-						std::cout << "" << std::endl;
-					}*/
+
 					transpose_indexes(0, wall_index);
 					if (rotation_direction == -1) {
 						switch_index_cols(0, wall_index);
@@ -83,20 +73,6 @@ void BigCube::rotate_index(vec3 axis, int wall_index) {
 					else {
 						switch_index_rows(0, wall_index);
 					}
-					/*std::cout << "" << std::endl;
-					std::cout << "" << std::endl;
-					std::cout << "" << std::endl;
-					std::cout << "Index after a turning: " << std::endl;
-					for (int i = 0; i < cubeSize; i++) {
-						std::cout << "row: " << i << std::endl;
-						for (int j = 0; j < cubeSize; j++) {
-							std::cout << "vec: " << j << std::endl;
-							std::cout << index_matrix[wall_index][i][j].x << "   " <<
-								index_matrix[wall_index][i][j].y << "    " <<
-								index_matrix[wall_index][i][j].z << std::endl;
-						}
-						std::cout << "" << std::endl;
-					}*/
 				}
 			}
 		}
@@ -112,21 +88,20 @@ void BigCube::rotate_index(vec3 axis, int wall_index) {
 							curr_index.y << "   " << curr_index.z << std::endl;
 					}
 				}
-				y_angle += rotation_degrees;
+				y_angle += rotation_degrees * rotation_direction;;
 				if ((int)y_angle % 90 == 0) {
 					transpose_indexes(1, wall_index);
-					if (rotation_direction == 1){
+					if (rotation_direction == -1){
 						switch_index_cols(1, wall_index);
 					}
 					else {
 						switch_index_rows(1, wall_index);
 					}
-					
 				}
 			}
 		}
 		if (axis == z_axis) {
-			if (((int)(y_angle) % 90 == 0) && (((int)(z_angle) % 90) == 0)) {
+			if (((int)(y_angle) % 90 == 0) && (((int)(x_angle) % 90) == 0)) {
 				for (auto i = 0; i < cubeSize; i++) {
 					for (auto j = 0; j < cubeSize; j++) {
 						curr_index = index_matrix[i][j][wall_index];
@@ -134,11 +109,17 @@ void BigCube::rotate_index(vec3 axis, int wall_index) {
 							rotate_object(rotation_degrees*rotation_direction, axis);
 					}
 				}
-				z_angle += rotation_degrees;
+				z_angle += rotation_degrees * rotation_direction;;
 				if ((int)z_angle % 90 == 0) {
 					transpose_indexes(2, wall_index);
-					switch_index_cols(2, wall_index);
+					if (rotation_direction == -1) {
+						switch_index_cols(2, wall_index);
+					}
+					else {
+						switch_index_rows(2, wall_index);
+					}
 				}
+
 			}
 		}
 	}

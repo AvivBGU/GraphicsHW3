@@ -3,7 +3,7 @@ using namespace glm;
 
 
 void Displayable_object::rotate_object(float degrees, vec3 axis) {
-	rotation = rotation* glm::rotate(degrees, axis);
+	rotation =  glm::rotate(degrees, axis)*rotation;
 
 }
 

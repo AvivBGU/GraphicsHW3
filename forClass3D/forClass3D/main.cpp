@@ -8,7 +8,7 @@
 #include <glm/gtx/transform.hpp>
 #include "Displayable_object.h"
 #include "BigCube.h"
-#define CUBE_SIZE 2
+#define CUBE_SIZE 3
 using namespace glm;
 BigCube main_cube(CUBE_SIZE);
 
@@ -20,6 +20,9 @@ static const glm::vec3 GREEN = glm::vec3(0, 1, 0);
 static const glm::vec3 YELLOW = glm::vec3(1, 1, 0);
 static const glm::vec3 TEAL = glm::vec3(0, 1, 1);
 static const glm::vec3 PURPLE = glm::vec3(1, 0, 1);
+mat4 rotatation = mat4(1);
+mat4 scaler;
+vec3 pos;
 
 void print_matrix(mat4 matrix_to_print) { //Helper function to print a given matrix.
 	std::cout << "Given matrix is: " << std::endl;
@@ -66,7 +69,7 @@ int main(int argc, char** argv)
 		Vertex(glm::vec3(1, 1, 1), glm::vec2(0, 0), glm::vec3(1, 0, 0),PURPLE),
 		Vertex(glm::vec3(1, 1, -1), glm::vec2(0, 1), glm::vec3(1, 0, 0),PURPLE)
 	};
-
+	
 	unsigned int indices[] = {0, 1, 2,
 							  0, 2, 3,
 
@@ -87,16 +90,20 @@ int main(int argc, char** argv)
 	                          };
     Mesh mesh(vertices, sizeof(vertices)/sizeof(vertices[0]), indices, sizeof(indices)/sizeof(indices[0]));
 	Shader shader("./res/shaders/basicShader");
-	vec3 pos = vec3(0,0,-5);
+	pos = vec3(0,0,-5);
 	vec3 forward = glm::vec3(0.0f, 0.0f, 1.0f);
-	vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
-	mat4 perspective = glm::perspective(60.0f, (float)DISPLAY_WIDTH/(float)DISPLAY_HEIGHT, 0.1f, 100.0f);
-	mat4 M = glm::rotate(45.0f,vec3(1));
-	perspective = perspective * glm::lookAt(pos, pos + forward, up);
-	mat4 MVP = mat4(1);
-	mat4 scale = glm::scale(glm::vec3(0.20));
+	vec3 up = glm::vec3(0.0f, 1.0f, 1.0f);
+	mat4 perspec = glm::perspective(60.0f, (float)DISPLAY_WIDTH / (float)DISPLAY_HEIGHT, 0.1f, 100.0f);
+	mat4 M;
+	perspec = perspec * glm::lookAt(pos, pos + forward, up);
+	scaler = glm::scale(glm::vec3(0.20));
 	glfwSetKeyCallback(display.m_window,key_callback);
-
+	glfwSetMouseButtonCallback(display.m_window, mouse_callback);
+	glfwSetScrollCallback(display.m_window, scroll_callback);
+	glfwSetCursorPosCallback(display.m_window, pos_callback);
+	perspec = perspec; //* rotatation;
+	Displayable_object small_cube;
+	mat4 MVP;
 	vec3 indexes;
 	int counter = 0;
 	while(!glfwWindowShouldClose(display.m_window))
@@ -104,7 +111,6 @@ int main(int argc, char** argv)
 		Sleep(3);
 		shader.Bind();
 		display.Clear(1.0f, 1.0f, 1.0f, 1.0f);
-		M = glm::rotate(M, 0.0f, up);
 		for (auto i = 0; i < CUBE_SIZE; i++)
 		{
 			for (auto j = 0; j < CUBE_SIZE; j++)
@@ -113,27 +119,16 @@ int main(int argc, char** argv)
 				{
 				   //M = localRotateX * localRotateY * rotate * translate;
 					indexes = main_cube.get_index_vec(i, j, k);
-					Displayable_object small_cube = main_cube.get_small_cube(indexes.x, indexes.y, indexes.z);
-					MVP = perspective *M* scale *small_cube.get_result();
-					/*M = small_cube.get_result();
-					MVP = perspective*scale * M;*/
+					small_cube = main_cube.get_small_cube(indexes.x, indexes.y, indexes.z);
+					//MVP = perspective *M* scale *small_cube.get_result();
+					M = rotatation*small_cube.get_result();
+					MVP = perspec *scaler * M;
 					shader.Update(MVP, M); //Second variable controls the location of the light.
 					mesh.Draw();
 				}
 			}
 		}
 		display.SwapBuffers();
-		////Lets rotate some shit.
-		/*if (counter < 1) {
-			main_cube.rotate_index(vec3(1, 0, 0), 0);
-			main_cube.rotate_index(vec3(1, 0, 0), 0);
-			counter++;
-		}
-		counter++;
-		if (counter > 5 && counter < 7) {
-			main_cube.rotate_index(vec3(0, 1, 0), 0);
-			counter++;
-		}*/
 		glfwPollEvents();
 	}
 
