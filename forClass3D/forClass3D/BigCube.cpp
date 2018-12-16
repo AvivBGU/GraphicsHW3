@@ -14,7 +14,7 @@ BigCube::BigCube(int cubeSize) :cubeSize{ cubeSize }, cube_matrix{NULL}, index_m
 	index_matrix = new vec3**[cubeSize];
 	wall_angles = new float*[NUM_OF_DIMENTIONS];
 	float middle_alignment;
-	for (int i = 0; i < NUM_OF_DIMENTIONS; i++) {
+	for (int i = 0; i < NUM_OF_DIMENTIONS; i++) { //Setting the angles to 0.
 		wall_angles[i] = new float[cubeSize];
 		for (int j = 0; j < cubeSize; j++) {
 			wall_angles[i][j] = 0;
@@ -43,9 +43,8 @@ BigCube::BigCube(int cubeSize) :cubeSize{ cubeSize }, cube_matrix{NULL}, index_m
 
 BigCube::~BigCube() {
 	for (int i = 0; i < cubeSize; i++) {
-
 		for (int j = 0; j < cubeSize; j++) {
-//			delete cube_matrix[i][j]; 
+			//delete cube_matrix[i][j]; TODO. Fix this crap. 
 			delete index_matrix[i][j];
 		}
 		delete cube_matrix[i];

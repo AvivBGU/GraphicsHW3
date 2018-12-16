@@ -3,6 +3,7 @@
 
 #include "glm\glm.hpp"
 #include <string>
+#include <iostream>
 #include <vector>
 #include "obj_loader.h"
 #include "stdio.h"
@@ -28,9 +29,7 @@ class Displayable_object {
 		}
 
 		virtual ~Displayable_object();
-		mat4 show_rotation() const { //A helper function for debugging purposes.
-			return rotation;
-		}
+
 
 		void rotate_object(float degrees, vec3 axis);
 		void move_object(vec3 direction);

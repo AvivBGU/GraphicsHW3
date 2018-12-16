@@ -8,7 +8,6 @@ void Displayable_object::rotate_object(float degrees, vec3 axis) {
 }
 
 Displayable_object::~Displayable_object() {
-
 }
 
 mat4 Displayable_object::get_result() {

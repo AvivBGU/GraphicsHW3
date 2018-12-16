@@ -49,8 +49,8 @@ inline void pos_callback(GLFWwindow *window, double x_pos_curr, double y_pos_cur
 		}
 		x_pos = x_pos_curr;
 		y_pos = y_pos_curr;
-
-		rotatation = rotatation * rotate(1.5f, normalize(rotation_axis));
+		//TODO fine tuning the rotation angle.
+		rotatation = rotate(2.5f, normalize(rotation_axis)) * rotatation ;
 	}
 	if (curr_button_pressed == GLFW_MOUSE_BUTTON_RIGHT) {
 		vec3 movement_direction = vec3(-clamp((float)(x_pos_curr - x_pos), -SOFT, SOFT), 
@@ -60,8 +60,8 @@ inline void pos_callback(GLFWwindow *window, double x_pos_curr, double y_pos_cur
 		}
 		x_pos = x_pos_curr;
 		y_pos = y_pos_curr;
-
-		rotatation = rotatation * translate(movement_direction);
+		//TODO fine tuning the movement rate.
+		rotatation = translate(movement_direction) * rotatation ;
 	}
 }
 

@@ -39,11 +39,12 @@ public:
 	void change_rotation_direction() {
 		rotation_direction *= -1;
 	}
+
 	vec3& get_index_vec(int i, int j, int k) const {
 		return index_matrix[i][j][k];
 	}
 
-	Displayable_object& get_small_cube(int i, int j, int k) const {
+	Displayable_object get_small_cube(int i, int j, int k) const {
 		return cube_matrix[i][j][k];
 	}
 

@@ -32,11 +32,13 @@ void print_matrix(mat4 matrix_to_print) { //Helper function to print a given mat
 	}
 }
 
-
+void blorg() {
+	BigCube asd = BigCube(4);
+}
 int main(int argc, char** argv)
 {
 	Display display(DISPLAY_WIDTH, DISPLAY_HEIGHT, "OpenGL");
-	
+	blorg();
 	Vertex vertices[] =
 	{	//position, coordinates texture, normal, color
 		Vertex(glm::vec3(-1, -1, -1), glm::vec2(1, 0), glm::vec3(0, 0, -1),BLUE),
@@ -108,7 +110,7 @@ int main(int argc, char** argv)
 	int counter = 0;
 	while(!glfwWindowShouldClose(display.m_window))
 	{
-		Sleep(3);
+		//Sleep(3);
 		shader.Bind();
 		display.Clear(1.0f, 1.0f, 1.0f, 1.0f);
 		for (auto i = 0; i < CUBE_SIZE; i++)
@@ -117,12 +119,10 @@ int main(int argc, char** argv)
 			{
 				for (auto k = 0; k < CUBE_SIZE; k++)
 				{
-				   //M = localRotateX * localRotateY * rotate * translate;
 					indexes = main_cube.get_index_vec(i, j, k);
 					small_cube = main_cube.get_small_cube(indexes.x, indexes.y, indexes.z);
-					//MVP = perspective *M* scale *small_cube.get_result();
-					M = rotatation*small_cube.get_result();
-					MVP = perspec *scaler * M;
+					M = rotatation * small_cube.get_result();
+					MVP =  perspec *  scaler * M;
 					shader.Update(MVP, M); //Second variable controls the location of the light.
 					mesh.Draw();
 				}
@@ -131,7 +131,6 @@ int main(int argc, char** argv)
 		display.SwapBuffers();
 		glfwPollEvents();
 	}
-
 	return 0;
 }
 
