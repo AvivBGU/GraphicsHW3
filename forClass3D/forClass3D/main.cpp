@@ -32,13 +32,9 @@ void print_matrix(mat4 matrix_to_print) { //Helper function to print a given mat
 	}
 }
 
-void blorg() {
-	BigCube asd = BigCube(4);
-}
 int main(int argc, char** argv)
 {
 	Display display(DISPLAY_WIDTH, DISPLAY_HEIGHT, "OpenGL");
-	blorg();
 	Vertex vertices[] =
 	{	//position, coordinates texture, normal, color
 		Vertex(glm::vec3(-1, -1, -1), glm::vec2(1, 0), glm::vec3(0, 0, -1),BLUE),

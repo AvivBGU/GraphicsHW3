@@ -44,18 +44,18 @@ BigCube::BigCube(int cubeSize) :cubeSize{ cubeSize }, cube_matrix{NULL}, index_m
 BigCube::~BigCube() {
 	for (int i = 0; i < cubeSize; i++) {
 		for (int j = 0; j < cubeSize; j++) {
-			//delete cube_matrix[i][j]; TODO. Fix this crap. 
-			delete index_matrix[i][j];
+			delete (cube_matrix[i][j]);
+			delete (index_matrix[i][j]);
 		}
-		delete cube_matrix[i];
-		delete index_matrix[i];
+		delete (cube_matrix[i]);
+		delete (index_matrix[i]);
 	}
-	delete cube_matrix;
-	delete index_matrix;
+	delete (cube_matrix);
+	delete (index_matrix);
 	for (int i = 0; i < 3; i++) {
-		delete wall_angles[i];
+		delete (wall_angles[i]);
 	}
-	delete wall_angles;
+	delete (wall_angles);
 }
 
 void BigCube::rotate_index(vec3 axis, int wall_index) {
