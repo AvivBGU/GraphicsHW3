@@ -13,6 +13,9 @@
 #define x_axis glm::vec3(1,0,0)
 #define y_axis glm::vec3(0,1,0)
 #define z_axis glm::vec3(0,0,1)
+#define x_axis_ind 0
+#define	y_axis_ind 1
+#define z_axis_ind 2
 
 using namespace glm;
 

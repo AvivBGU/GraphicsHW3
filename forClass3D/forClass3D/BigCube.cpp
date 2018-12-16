@@ -1,5 +1,5 @@
 #include "BigCube.h"
-#define DIST_BETWEEN_CUBES 1.1
+#define DIST_BETWEEN_CUBES 1.05
 #define SMALL_CUBE_SIZE 2.0
 #define NUM_OF_DIMENTIONS 3
 #define FPI_PRECISION 0.0001
@@ -66,7 +66,7 @@ void BigCube::rotate_index(vec3 axis, int wall_index) {
 	vec3 switch_helper = vec3(1);
 	if (wall_index < cubeSize && wall_index >= 0) {
 		if (axis == x_axis) {
-			if (verify_wall_position(0)) {
+			if (verify_wall_position(x_axis_ind)) {
 				for (auto j = 0; j < cubeSize; j++) {
 					for (auto k = 0; k < cubeSize; k++) {
 						curr_index = index_matrix[wall_index][j][k];
@@ -76,20 +76,20 @@ void BigCube::rotate_index(vec3 axis, int wall_index) {
 							curr_index.y << "   " << curr_index.z << std::endl;
 					}
 				}
-				update_wall_pos(0, wall_index, rotation_degrees * rotation_direction);
-				if (wall_angles[0][wall_index] == 0) {
-					transpose_indexes(0, wall_index);
+				update_wall_pos(x_axis_ind, wall_index, rotation_degrees * rotation_direction);
+				if (wall_angles[x_axis_ind][wall_index] == 0) {
+					transpose_indexes(x_axis_ind, wall_index);
 					if (rotation_direction == -1) {
-						switch_index_cols(0, wall_index);
+						switch_index_cols(x_axis_ind, wall_index);
 					}
 					else {
-						switch_index_rows(0, wall_index);
+						switch_index_rows(x_axis_ind, wall_index);
 					}
 				}
 			}
 		}
 		if (axis == y_axis) {
-			if (verify_wall_position(1)) {
+			if (verify_wall_position(y_axis_ind)) {
 				std::cout << "Y axis: " << std::endl;
 				for (auto i = 0; i < cubeSize; i++) {
 					for (auto k = 0; k < cubeSize; k++) {
@@ -100,20 +100,20 @@ void BigCube::rotate_index(vec3 axis, int wall_index) {
 							curr_index.y << "   " << curr_index.z << std::endl;
 					}
 				}
-				update_wall_pos(1, wall_index, rotation_degrees * rotation_direction);
-				if (wall_angles[1][wall_index] == 0) {
-					transpose_indexes(1, wall_index);
-					if (rotation_direction == -1){
-						switch_index_cols(1, wall_index);
+				update_wall_pos(y_axis_ind, wall_index, rotation_degrees * rotation_direction);
+				if (wall_angles[y_axis_ind][wall_index] == 0) {
+					transpose_indexes(y_axis_ind, wall_index);
+					if (rotation_direction == 1){
+						switch_index_cols(y_axis_ind, wall_index);
 					}
 					else {
-						switch_index_rows(1, wall_index);
+						switch_index_rows(y_axis_ind, wall_index);
 					}
 				}
 			}
 		}
 		if (axis == z_axis) {
-			if (verify_wall_position(2)) {
+			if (verify_wall_position(z_axis_ind)) {
 				for (auto i = 0; i < cubeSize; i++) {
 					for (auto j = 0; j < cubeSize; j++) {
 						curr_index = index_matrix[i][j][wall_index];
@@ -121,14 +121,14 @@ void BigCube::rotate_index(vec3 axis, int wall_index) {
 							rotate_object(rotation_degrees*rotation_direction, axis);
 					}
 				}
-				update_wall_pos(2, wall_index, rotation_degrees * rotation_direction);
-				if (wall_angles[2][wall_index] == 0) {
-					transpose_indexes(2, wall_index);
+				update_wall_pos(z_axis_ind, wall_index, rotation_degrees * rotation_direction);
+				if (wall_angles[z_axis_ind][wall_index] == 0) {
+					transpose_indexes(z_axis_ind, wall_index);
 					if (rotation_direction == -1) {
-						switch_index_cols(2, wall_index);
+						switch_index_cols(z_axis_ind, wall_index);
 					}
 					else {
-						switch_index_rows(2, wall_index);
+						switch_index_rows(z_axis_ind, wall_index);
 					}
 				}
 
@@ -148,7 +148,7 @@ void BigCube::transpose_indexes(int axis, int face_index) {
 	int row = 0, col = 0;
 		vec3 switch_helper = vec3(1);
 	switch (axis) {
-		case 0: //X axis
+		case x_axis_ind: //X axis
 			for (; row < cubeSize; row++){
 				for (col = row; col < cubeSize; col++) {
 					switch_helper = index_matrix[face_index][row][col];
@@ -157,7 +157,7 @@ void BigCube::transpose_indexes(int axis, int face_index) {
 				}
 			}
 			break;
-		case 1: //Y axis
+		case y_axis_ind: //Y axis
 			for (; row < cubeSize; row++) {
 				for (col = row; col < cubeSize; col++) {
 					switch_helper = index_matrix[row][face_index][col];
@@ -166,7 +166,7 @@ void BigCube::transpose_indexes(int axis, int face_index) {
 				}
 			}
 			break;
-		case 2: //Z axis
+		case z_axis_ind: //Z axis
 			for (; row < cubeSize; row++) {
 				for (col = row; col < cubeSize; col++) {
 					switch_helper = index_matrix[row][col][face_index];
@@ -184,7 +184,7 @@ void BigCube::switch_index_rows(int axis, int face_index) {
 	int row = 0, col = 0;
 	vec3 switch_helper = vec3(1);
 	switch (axis) {
-	case 0: //X axis
+	case x_axis_ind: //X axis
 		for (; row < cubeSize; row++) {
 			for (; col < cubeSize; col++) {
 				switch_helper = index_matrix[face_index][row][col];
@@ -193,7 +193,7 @@ void BigCube::switch_index_rows(int axis, int face_index) {
 			}
 		}
 		break;
-	case 1: //Y axis
+	case y_axis_ind: //Y axis
 		for (; row < cubeSize; row++) {
 			for (; col < cubeSize; col++) {
 				switch_helper = index_matrix[row][face_index][col];
@@ -202,7 +202,7 @@ void BigCube::switch_index_rows(int axis, int face_index) {
 			}
 		}
 		break;
-	case 2: //Z axis
+	case z_axis_ind: //Z axis
 		for (; row < cubeSize; row++) {
 			for (; col < cubeSize; col++) {
 				switch_helper = index_matrix[row][col][face_index];
@@ -220,7 +220,7 @@ void BigCube::switch_index_cols(int axis, int face_index) {
 	int row = 0, col = 0;
 	vec3 switch_helper = vec3(1);
 	switch (axis) {
-	case 0: //X axis
+	case x_axis_ind: //X axis
 		for (; col < cubeSize; col++) {
 			for (; row < cubeSize; row++) {
 				//std::cout << "Prior to switch:  " << index_matrix[face_index][row][col].x << "   " <<
@@ -233,16 +233,16 @@ void BigCube::switch_index_cols(int axis, int face_index) {
 			}
 		}
 		break;
-	case 1: //Y axis
-		for (; row < cubeSize; row++) {
-			for (; col < cubeSize; col++) {
+	case y_axis_ind: //Y axis
+		for (; col < cubeSize; col++) {
+			for (; row < cubeSize; row++) {
 				switch_helper = index_matrix[col][face_index][row];
 				index_matrix[col][face_index][row] = index_matrix[cubeSize - 1 - col][face_index][row];
 				index_matrix[cubeSize - 1 - col][face_index][row] = switch_helper;
 			}
 		}
 		break;
-	case 2: //Z axis
+	case z_axis_ind: //Z axis
 		for (; row < cubeSize; row++) {
 			for (; col < cubeSize; col++) {
 				switch_helper = index_matrix[col][row][face_index];
@@ -260,7 +260,7 @@ void BigCube::switch_index_cols(int axis, int face_index) {
 
 bool BigCube::verify_wall_position(int wall_index) {
 	switch (wall_index) { //0 is x, 1 is y, 2 is z.
-		case 0: {
+		case x_axis_ind: {
 			for (int i = 0; i < cubeSize; i++) {
 				if (wall_angles[1][i] != 0 || wall_angles[2][i] != 0) {
 					return false;
@@ -268,7 +268,7 @@ bool BigCube::verify_wall_position(int wall_index) {
 			}
 		break;
 		}
-		case 1: {
+		case y_axis_ind: {
 			for (int i = 0; i < cubeSize; i++) {
 				if (wall_angles[0][i] != 0 || wall_angles[2][i] != 0) {
 					return false;
@@ -276,7 +276,7 @@ bool BigCube::verify_wall_position(int wall_index) {
 			}
 			break;
 		}
-		case 2: {
+		case z_axis_ind: {
 			for (int i = 0; i < cubeSize; i++) {
 				if (wall_angles[0][i] != 0 || wall_angles[1][i] != 0) {
 					return false;
@@ -291,7 +291,7 @@ bool BigCube::verify_wall_position(int wall_index) {
 void BigCube::update_wall_pos(int axis, int wall_index, float angle) {
 	if (axis >= 0 && axis <= NUM_OF_DIMENTIONS && wall_index >= 0 && wall_index <= cubeSize) {
 		wall_angles[axis][wall_index] = wall_angles[axis][wall_index] + angle;
-		if (abs(wall_angles[axis][wall_index] - 90.0f) < FPI_PRECISION) {
+		if (abs(abs(wall_angles[axis][wall_index]) - 90.0f) < FPI_PRECISION) {
 			wall_angles[axis][wall_index] = 0;
 		}
 	}

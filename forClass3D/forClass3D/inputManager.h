@@ -10,6 +10,7 @@
 #include <glm/gtx/transform.hpp>
 #include "Displayable_object.h"
 #include "BigCube.h"
+#define SOFT 0.2f
 extern BigCube main_cube;
 extern mat4 rotatation;
 extern mat4 scaler;
@@ -42,10 +43,25 @@ inline void pos_callback(GLFWwindow *window, double x_pos_curr, double y_pos_cur
 	//Need to check if the position is getting closer to the originial pressed position 
 	//or is getting further away.
 	if (curr_button_pressed == GLFW_MOUSE_BUTTON_LEFT) {
-		rotatation = rotatation * glm::rotate(1.0f, normalize(vec3(-std::abs(y_pos_curr) + 
-			std::abs(y_pos), -std::abs(x_pos_curr) + std::abs(x_pos), 0)));
+		vec3 rotation_axis = vec3(-y_pos_curr + y_pos, x_pos_curr - x_pos, 0);
+		if (rotation_axis == vec3(0)) {
+			return;
+		}
+		x_pos = x_pos_curr;
+		y_pos = y_pos_curr;
+
+		rotatation = rotatation * rotate(1.5f, normalize(rotation_axis));
 	}
 	if (curr_button_pressed == GLFW_MOUSE_BUTTON_RIGHT) {
+		vec3 movement_direction = vec3(-clamp((float)(x_pos_curr - x_pos), -SOFT, SOFT), 
+			-clamp((float)(y_pos_curr - y_pos), -SOFT, SOFT), 0);
+		if (movement_direction == vec3(0)) {
+			return;
+		}
+		x_pos = x_pos_curr;
+		y_pos = y_pos_curr;
+
+		rotatation = rotatation * translate(movement_direction);
 	}
 }
 
@@ -102,7 +118,7 @@ inline void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 		break;
 	case GLFW_KEY_F:
 		main_cube.rotate_index(vec3(0, 0, 1), 0);
-		//break;
+		break;
 	case GLFW_KEY_B:
 		main_cube.rotate_index(vec3(0, 0, 1), main_cube.get_cube_size() - 1);
 		break;
