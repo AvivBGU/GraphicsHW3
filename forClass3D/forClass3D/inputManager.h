@@ -16,19 +16,15 @@ extern mat4 scaler;
 double x_pos = 0, y_pos = 0;
 int curr_button_pressed = -1;
 int is_button_pressed = -1;
-//'R' press state for right wall rotation(90 degrees clockwise).
-//'L' press state for right wall rotation(90 degrees clockwise).
-//'U' press state for up wall rotation(90 degrees clockwise).
-//'D' press state for down wall rotation(90 degrees clockwise).
-//'B' press state for back wall rotation(90 degrees clockwise).
-//'F' press state for front wall rotation(90 degrees clockwise).
-//' ' press state for flipping rotation direction(from clockwise to counter clockwise or vise versa).
-//'Z' press state : dividing rotation angle by 2; i. 
-//'A' press state : multiply rotation angle by 2 (until maximum of 180);
 
 inline void scroll_callback(GLFWwindow *window, double x_axis_offset, double y_axis_offset) {
+	char* scroll_action_y = y_axis_offset > 0 ? "up scroll" : "down scroll";
+	char* scroll_action_x = x_axis_offset > 0 ? "left scroll" : "right scroll";
+	scroll_action_y = y_axis_offset == 0 ? "No action" : scroll_action_y;
+	scroll_action_x = x_axis_offset == 0 ? "No action" : scroll_action_x;
 	std::cout << "Wheel has been activated:" << std::endl;
-	std::cout << "X pos: " << x_axis_offset <<"     " << "Y pos" << y_axis_offset << std::endl;
+	std::cout << "X action: " << scroll_action_x <<"     " << "Y action: " << scroll_action_y << std::endl;
+	std::cout << "" << std::endl;
 	//-1 enlarges the image, 1 smallifies it.
 	if (y_axis_offset < 0) {
 		scaler = scaler * glm::scale(vec3(1.05));
@@ -46,34 +42,30 @@ inline void pos_callback(GLFWwindow *window, double x_pos_curr, double y_pos_cur
 	//Need to check if the position is getting closer to the originial pressed position 
 	//or is getting further away.
 	if (curr_button_pressed == GLFW_MOUSE_BUTTON_LEFT) {
-		rotatation = rotatation * glm::rotate(1.0f, vec3(-std::abs(y_pos_curr) + 
-			std::abs(y_pos), -std::abs(x_pos_curr) + std::abs(x_pos), 0));
+		rotatation = rotatation * glm::rotate(1.0f, normalize(vec3(-std::abs(y_pos_curr) + 
+			std::abs(y_pos), -std::abs(x_pos_curr) + std::abs(x_pos), 0)));
 	}
 	if (curr_button_pressed == GLFW_MOUSE_BUTTON_RIGHT) {
 	}
 }
 
 inline void mouse_callback(GLFWwindow *window, int button_pressed, int action, int mods) {
-	char* right = "right";
-	char* left = "left";
-	char* released = "released";
-	char* pressed = "pressed";
 	bool pressed_flag = false;
 	bool valid_press = true;
 	bool single_pos = true;
-	char* curr_button = button_pressed == GLFW_MOUSE_BUTTON_RIGHT ? right : left;
-	char* curr_action = action == GLFW_PRESS ? pressed : released;
+	char* curr_button = button_pressed == GLFW_MOUSE_BUTTON_RIGHT ? "right" : "left";
+	char* curr_action = action == GLFW_PRESS ? "pressed" : "released";
 	curr_button_pressed = button_pressed;
 	is_button_pressed = action;
 	glfwGetCursorPos(window, &x_pos, &y_pos);
 	std::cout << "X position is: " << x_pos << std::endl;
 	std::cout << "Y position is: " << y_pos << std::endl;
-	if (button_pressed == 2) {
+	if (button_pressed > 1) {
 		valid_press = false;
 	}
 	if (valid_press) {
 		std::cout << curr_button << " button has been " << curr_action << std::endl;
-		pressed_flag = action == 1 ? true : false;
+		pressed_flag = action == GLFW_PRESS ? true : false; //False is button is released.
 		if (pressed_flag && single_pos) { //Gets the curser current position.
 			glfwGetCursorPos(window, &x_pos, &y_pos);
 			single_pos = false;
@@ -110,7 +102,7 @@ inline void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 		break;
 	case GLFW_KEY_F:
 		main_cube.rotate_index(vec3(0, 0, 1), 0);
-		break;
+		//break;
 	case GLFW_KEY_B:
 		main_cube.rotate_index(vec3(0, 0, 1), main_cube.get_cube_size() - 1);
 		break;

@@ -1,16 +1,25 @@
 #include "BigCube.h"
 #define DIST_BETWEEN_CUBES 1.1
 #define SMALL_CUBE_SIZE 2.0
+#define NUM_OF_DIMENTIONS 3
+#define FPI_PRECISION 0.0001
 
 using namespace glm;
 BigCube::BigCube(int cubeSize) :cubeSize{ cubeSize }, cube_matrix{NULL}, index_matrix{NULL},
-								 x_angle{ 0 }, y_angle{ 0 }, z_angle{ 0 }{
+								 wall_angles{NULL}{
 	if (cubeSize < 1) {
 		//TODO
 	}
 	cube_matrix = new Displayable_object**[cubeSize];
 	index_matrix = new vec3**[cubeSize];
+	wall_angles = new float*[NUM_OF_DIMENTIONS];
 	float middle_alignment;
+	for (int i = 0; i < NUM_OF_DIMENTIONS; i++) {
+		wall_angles[i] = new float[cubeSize];
+		for (int j = 0; j < cubeSize; j++) {
+			wall_angles[i][j] = 0;
+		}
+	}
 	for (int i = 0; i < cubeSize; i++) {
 		cube_matrix[i] = new Displayable_object*[cubeSize];
 		index_matrix[i] = new vec3*[cubeSize];
@@ -36,7 +45,7 @@ BigCube::~BigCube() {
 	for (int i = 0; i < cubeSize; i++) {
 
 		for (int j = 0; j < cubeSize; j++) {
-//			delete cube_matrix[i][j]; //TODO
+//			delete cube_matrix[i][j]; 
 			delete index_matrix[i][j];
 		}
 		delete cube_matrix[i];
@@ -44,6 +53,10 @@ BigCube::~BigCube() {
 	}
 	delete cube_matrix;
 	delete index_matrix;
+	for (int i = 0; i < 3; i++) {
+		delete wall_angles[i];
+	}
+	delete wall_angles;
 }
 
 void BigCube::rotate_index(vec3 axis, int wall_index) {
@@ -53,7 +66,7 @@ void BigCube::rotate_index(vec3 axis, int wall_index) {
 	vec3 switch_helper = vec3(1);
 	if (wall_index < cubeSize && wall_index >= 0) {
 		if (axis == x_axis) {
-			if (((int)(y_angle) % 90 == 0) && (((int)(z_angle) % 90) == 0)) {
+			if (verify_wall_position(0)) {
 				for (auto j = 0; j < cubeSize; j++) {
 					for (auto k = 0; k < cubeSize; k++) {
 						curr_index = index_matrix[wall_index][j][k];
@@ -63,9 +76,8 @@ void BigCube::rotate_index(vec3 axis, int wall_index) {
 							curr_index.y << "   " << curr_index.z << std::endl;
 					}
 				}
-				x_angle += rotation_degrees * rotation_direction;
-				if ((int)x_angle % 90 == 0) {
-
+				update_wall_pos(0, wall_index, rotation_degrees * rotation_direction);
+				if (wall_angles[0][wall_index] == 0) {
 					transpose_indexes(0, wall_index);
 					if (rotation_direction == -1) {
 						switch_index_cols(0, wall_index);
@@ -77,7 +89,7 @@ void BigCube::rotate_index(vec3 axis, int wall_index) {
 			}
 		}
 		if (axis == y_axis) {
-			if (((int)(x_angle) % 90 == 0) && (((int)(z_angle) % 90) == 0)) {
+			if (verify_wall_position(1)) {
 				std::cout << "Y axis: " << std::endl;
 				for (auto i = 0; i < cubeSize; i++) {
 					for (auto k = 0; k < cubeSize; k++) {
@@ -88,8 +100,8 @@ void BigCube::rotate_index(vec3 axis, int wall_index) {
 							curr_index.y << "   " << curr_index.z << std::endl;
 					}
 				}
-				y_angle += rotation_degrees * rotation_direction;;
-				if ((int)y_angle % 90 == 0) {
+				update_wall_pos(1, wall_index, rotation_degrees * rotation_direction);
+				if (wall_angles[1][wall_index] == 0) {
 					transpose_indexes(1, wall_index);
 					if (rotation_direction == -1){
 						switch_index_cols(1, wall_index);
@@ -101,7 +113,7 @@ void BigCube::rotate_index(vec3 axis, int wall_index) {
 			}
 		}
 		if (axis == z_axis) {
-			if (((int)(y_angle) % 90 == 0) && (((int)(x_angle) % 90) == 0)) {
+			if (verify_wall_position(2)) {
 				for (auto i = 0; i < cubeSize; i++) {
 					for (auto j = 0; j < cubeSize; j++) {
 						curr_index = index_matrix[i][j][wall_index];
@@ -109,8 +121,8 @@ void BigCube::rotate_index(vec3 axis, int wall_index) {
 							rotate_object(rotation_degrees*rotation_direction, axis);
 					}
 				}
-				z_angle += rotation_degrees * rotation_direction;;
-				if ((int)z_angle % 90 == 0) {
+				update_wall_pos(2, wall_index, rotation_degrees * rotation_direction);
+				if (wall_angles[2][wall_index] == 0) {
 					transpose_indexes(2, wall_index);
 					if (rotation_direction == -1) {
 						switch_index_cols(2, wall_index);
@@ -241,5 +253,46 @@ void BigCube::switch_index_cols(int axis, int face_index) {
 		break;
 	default:
 		break;
+	}
+
+	
+}
+
+bool BigCube::verify_wall_position(int wall_index) {
+	switch (wall_index) { //0 is x, 1 is y, 2 is z.
+		case 0: {
+			for (int i = 0; i < cubeSize; i++) {
+				if (wall_angles[1][i] != 0 || wall_angles[2][i] != 0) {
+					return false;
+				}
+			}
+		break;
+		}
+		case 1: {
+			for (int i = 0; i < cubeSize; i++) {
+				if (wall_angles[0][i] != 0 || wall_angles[2][i] != 0) {
+					return false;
+				}
+			}
+			break;
+		}
+		case 2: {
+			for (int i = 0; i < cubeSize; i++) {
+				if (wall_angles[0][i] != 0 || wall_angles[1][i] != 0) {
+					return false;
+				}
+			}
+			break;
+		}
+	}
+	return true;
+}
+
+void BigCube::update_wall_pos(int axis, int wall_index, float angle) {
+	if (axis >= 0 && axis <= NUM_OF_DIMENTIONS && wall_index >= 0 && wall_index <= cubeSize) {
+		wall_angles[axis][wall_index] = wall_angles[axis][wall_index] + angle;
+		if (abs(wall_angles[axis][wall_index] - 90.0f) < FPI_PRECISION) {
+			wall_angles[axis][wall_index] = 0;
+		}
 	}
 }

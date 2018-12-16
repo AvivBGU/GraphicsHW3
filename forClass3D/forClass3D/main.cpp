@@ -8,8 +8,8 @@
 #include <glm/gtx/transform.hpp>
 #include "Displayable_object.h"
 #include "BigCube.h"
-#define CUBE_SIZE 3
 using namespace glm;
+#define CUBE_SIZE 3
 BigCube main_cube(CUBE_SIZE);
 
 static const int DISPLAY_WIDTH = 800;

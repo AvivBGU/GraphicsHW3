@@ -52,7 +52,6 @@ public:
 		return cubeSize;
 	}
 
-
 private:
 	/*glm::mat4 First_translate;
 	glm::mat4 Rotatation;
@@ -62,9 +61,9 @@ private:
 	const int cubeSize;
 	Displayable_object*** cube_matrix;
 	vec3*** index_matrix;
-	float x_angle;
-	float y_angle;
-	float z_angle;
+	float** wall_angles;
+	bool verify_wall_position(int wall_index);
+	void update_wall_pos(int axis, int wall_index, float angle);
 	void transpose_indexes(int axis, int face_index);
 	void switch_index_rows(int axis, int face_index);
 	void switch_index_cols(int axis, int face_index);
