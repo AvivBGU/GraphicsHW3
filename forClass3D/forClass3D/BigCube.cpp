@@ -44,16 +44,16 @@ BigCube::BigCube(int cubeSize) :cubeSize{ cubeSize }, cube_matrix{NULL}, index_m
 BigCube::~BigCube() {
 	for (int i = 0; i < cubeSize; i++) {
 		for (int j = 0; j < cubeSize; j++) {
-			delete (cube_matrix[i][j]);
-			delete (index_matrix[i][j]);
+			delete [](cube_matrix[i][j]);
+			delete [](index_matrix[i][j]);
 		}
-		delete (cube_matrix[i]);
-		delete (index_matrix[i]);
+		delete [](cube_matrix[i]);
+		delete [](index_matrix[i]);
 	}
 	delete (cube_matrix);
 	delete (index_matrix);
 	for (int i = 0; i < 3; i++) {
-		delete (wall_angles[i]);
+		delete [](wall_angles[i]);
 	}
 	delete (wall_angles);
 }
@@ -222,31 +222,27 @@ void BigCube::switch_index_cols(int axis, int face_index) {
 	case x_axis_ind: //X axis
 		for (; col < cubeSize; col++) {
 			for (; row < cubeSize; row++) {
-				//std::cout << "Prior to switch:  " << index_matrix[face_index][row][col].x << "   " <<
-				//	index_matrix[face_index][row][col].y << "   " << index_matrix[face_index][row][col].z << std::endl;
 				switch_helper = index_matrix[face_index][row][col];
 				index_matrix[face_index][row][col] = index_matrix[face_index][row][cubeSize - 1 - col];
 				index_matrix[face_index][row][cubeSize - 1 - col] = switch_helper;
-				//std::cout << "After the switch:  " << index_matrix[face_index][row][col].x << "   " <<
-				//	index_matrix[face_index][row][col].y << "   " << index_matrix[face_index][row][col].z << std::endl;
 			}
 		}
 		break;
 	case y_axis_ind: //Y axis
 		for (; col < cubeSize; col++) {
 			for (; row < cubeSize; row++) {
-				switch_helper = index_matrix[col][face_index][row];
-				index_matrix[col][face_index][row] = index_matrix[cubeSize - 1 - col][face_index][row];
-				index_matrix[cubeSize - 1 - col][face_index][row] = switch_helper;
+				switch_helper = index_matrix[row][face_index][col];
+				index_matrix[row][face_index][col] = index_matrix[row][face_index][cubeSize - 1 - col];
+				index_matrix[row][face_index][cubeSize - 1 - col] = switch_helper;
 			}
 		}
 		break;
 	case z_axis_ind: //Z axis
-		for (; row < cubeSize; row++) {
-			for (; col < cubeSize; col++) {
-				switch_helper = index_matrix[col][row][face_index];
-				index_matrix[col][row][face_index] = index_matrix[cubeSize - 1 - col][row][face_index];
-				index_matrix[cubeSize - 1 - col][row][face_index] = switch_helper;
+		for (; col < cubeSize; col++) {
+			for (; row < cubeSize; row++) {
+				switch_helper = index_matrix[row][col][face_index];
+				index_matrix[row][col][face_index] = index_matrix[row][cubeSize - 1 - col][face_index];
+				index_matrix[row][cubeSize - 1 - col][face_index] = switch_helper;
 			}
 		}
 		break;

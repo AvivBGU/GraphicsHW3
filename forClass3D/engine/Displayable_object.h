@@ -16,11 +16,13 @@ using namespace glm;
 class Displayable_object {
 	public: 
 		//Constructor
-		Displayable_object() {
+		Displayable_object()  {
 			first_translate = mat4(1);
 			rotation = mat4(1);
 			second_translate = mat4(1);
 		}
+
+		virtual ~Displayable_object(){}
 
 		void rotate_object(float degrees, vec3 axis);
 		void move_object(vec3 direction);

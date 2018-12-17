@@ -14,9 +14,14 @@
 extern BigCube main_cube;
 extern mat4 rotatation;
 extern mat4 scaler;
+extern mat4 translator;
+extern vec3 pos;
+extern mat4 perspec;
 double x_pos = 0, y_pos = 0;
 int curr_button_pressed = -1;
 int is_button_pressed = -1;
+vec3 forward = glm::vec3(0.0f, 0.0f, 1.0f);
+vec3 up = glm::vec3(0.0f, 1.0f, 1.0f);
 
 inline void scroll_callback(GLFWwindow *window, double x_axis_offset, double y_axis_offset) {
 	char* scroll_action_y = y_axis_offset > 0 ? "up scroll" : "down scroll";
@@ -29,10 +34,13 @@ inline void scroll_callback(GLFWwindow *window, double x_axis_offset, double y_a
 	//-1 enlarges the image, 1 smallifies it.
 	if (y_axis_offset < 0) {
 		scaler = scaler * glm::scale(vec3(1.05));
+		//pos += vec3(0, 0, 0.5);
 	}
 	else {
+		//pos += vec3(0, 0, - 0.5);
 		scaler = scaler * glm::scale(vec3(0.95));
 	}
+	//perspec =  perspec * glm::lookAt(pos, pos + forward, up) ;
 }
 
 inline void pos_callback(GLFWwindow *window, double x_pos_curr, double y_pos_curr) {
@@ -61,7 +69,7 @@ inline void pos_callback(GLFWwindow *window, double x_pos_curr, double y_pos_cur
 		x_pos = x_pos_curr;
 		y_pos = y_pos_curr;
 		//TODO fine tuning the movement rate.
-		rotatation = translate(movement_direction) * rotatation ;
+		translator = translate(movement_direction) * translator ;
 	}
 }
 

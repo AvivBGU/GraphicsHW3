@@ -22,7 +22,9 @@ static const glm::vec3 TEAL = glm::vec3(0, 1, 1);
 static const glm::vec3 PURPLE = glm::vec3(1, 0, 1);
 mat4 rotatation = mat4(1);
 mat4 scaler;
+mat4 translator = mat4(1);
 vec3 pos;
+mat4 perspec;
 
 void print_matrix(mat4 matrix_to_print) { //Helper function to print a given matrix.
 	std::cout << "Given matrix is: " << std::endl;
@@ -91,7 +93,7 @@ int main(int argc, char** argv)
 	pos = vec3(0,0,-5);
 	vec3 forward = glm::vec3(0.0f, 0.0f, 1.0f);
 	vec3 up = glm::vec3(0.0f, 1.0f, 1.0f);
-	mat4 perspec = glm::perspective(60.0f, (float)DISPLAY_WIDTH / (float)DISPLAY_HEIGHT, 0.1f, 100.0f);
+	perspec = glm::perspective(60.0f, (float)DISPLAY_WIDTH / (float)DISPLAY_HEIGHT, 0.1f, 100.0f);
 	mat4 M;
 	perspec = perspec * glm::lookAt(pos, pos + forward, up);
 	scaler = glm::scale(glm::vec3(0.20));
@@ -99,7 +101,6 @@ int main(int argc, char** argv)
 	glfwSetMouseButtonCallback(display.m_window, mouse_callback);
 	glfwSetScrollCallback(display.m_window, scroll_callback);
 	glfwSetCursorPosCallback(display.m_window, pos_callback);
-	perspec = perspec; //* rotatation;
 	Displayable_object small_cube;
 	mat4 MVP;
 	vec3 indexes;
@@ -118,7 +119,7 @@ int main(int argc, char** argv)
 					indexes = main_cube.get_index_vec(i, j, k);
 					small_cube = main_cube.get_small_cube(indexes.x, indexes.y, indexes.z);
 					M = rotatation * small_cube.get_result();
-					MVP =  perspec *  scaler * M;
+					MVP =  perspec *  scaler * translator* M ;
 					shader.Update(MVP, M); //Second variable controls the location of the light.
 					mesh.Draw();
 				}

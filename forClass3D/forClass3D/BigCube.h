@@ -44,12 +44,8 @@ public:
 		return index_matrix[i][j][k];
 	}
 
-	Displayable_object get_small_cube(int i, int j, int k) const {
+	Displayable_object& get_small_cube(int i, int j, int k) const {
 		return cube_matrix[i][j][k];
-	}
-
-	vec3*** get_index_matrix() { //TODO DELETE THIS AFTER DEBUG
-		return index_matrix;
 	}
 
 	int get_cube_size() {
@@ -57,9 +53,6 @@ public:
 	}
 
 private:
-	/*glm::mat4 First_translate;
-	glm::mat4 Rotatation;
-	glm::mat4 Second_translate;*/
 	float rotation_degrees = 45.0f;
 	int rotation_direction = 1;
 	const int cubeSize;
